@@ -17,6 +17,7 @@ namespace CurrencyCalculator.App.Classes
 
         public OldBritishPound(string value)
         {
+            ValidateFormat(value);
 
             var subStrings = value.Split(' ');
 
@@ -50,6 +51,17 @@ namespace CurrencyCalculator.App.Classes
         {
             string sanitizedValue = toDecode.Remove(toDecode.Length - 1, 1);
             return Int32.Parse(sanitizedValue);
+        }
+
+        private void ValidateFormat(string value)
+        {
+            Regex rx = new Regex(@"[0-9]+p[ 0-9]+s[ 0-9]+d",
+                RegexOptions.Compiled);
+
+            if (rx.Matches(value).Count != 1)
+            {
+                throw new FormatException($"The parameter {value} is not in the correct format <valueInPound>p <valueInShelling>s <valueInPenny>d");
+            }
         }
 
     }
