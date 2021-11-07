@@ -30,8 +30,15 @@ namespace CurrencyCalculator.App.Classes
 
         public ICurrency Add(string adder)
         {
-           
+            var adderObj = new OldBritishPound(adder);
 
+            this.Penny.Integer += adderObj.Penny.Integer;
+
+            this.Shilling.Integer += adderObj.Shilling.Integer;
+
+            this.Pound.Integer += adderObj.Pound.Integer;
+
+            return ReAllocateAmounts();
         }
 
         public ICurrency Divide(int divider)
@@ -64,6 +71,30 @@ namespace CurrencyCalculator.App.Classes
             {
                 throw new FormatException($"The parameter {value} is not in the correct format <valueInPound>p <valueInShelling>s <valueInPenny>d");
             }
+        }
+
+        public ICurrency ReAllocateAmounts()
+        {
+            int lentShilling = 0;
+            int lentPound = 0;
+
+            if (this.Penny.Integer >= PENNY_TO_SHILLING)
+            {
+                lentShilling += (int)Math.Floor((decimal)this.Penny.Integer / PENNY_TO_SHILLING);
+                this.Penny.Integer %= PENNY_TO_SHILLING;
+            }
+
+            this.Shilling.Integer += lentShilling;
+
+            if (this.Shilling.Integer >= SHILLING_TO_POUND)
+            {
+                lentPound += (int)Math.Floor((decimal)this.Shilling.Integer / SHILLING_TO_POUND);
+                this.Shilling.Integer %= SHILLING_TO_POUND;
+            }
+
+            this.Pound.Integer += lentPound;
+
+            return this;
         }
 
     }
