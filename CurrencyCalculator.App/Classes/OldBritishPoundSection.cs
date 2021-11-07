@@ -6,13 +6,13 @@ namespace CurrencyCalculator.App.Classes
 {
     public class OldBritishPoundSection
     {
-        public int Value { get; set; }
+        public int Integer { get; set; }
         public int Remainder { get; set; }
 
-        public OldBritishPoundSection()
+        public OldBritishPoundSection(int integer, int remainder = 0)
         {
-            Value = 0;
-            Remainder = 0;
+            Integer = integer;
+            Remainder = remainder;
         }
     }
 }
