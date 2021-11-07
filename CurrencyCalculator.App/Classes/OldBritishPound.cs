@@ -22,15 +22,16 @@ namespace CurrencyCalculator.App.Classes
 
             var subStrings = value.Split(' ');
 
-            this.Pound.Value = Decode(subStrings[0]);
-            this.Shilling.Value = Decode(subStrings[1]);
-            this.Penny.Value = Decode(subStrings[2]);
+            this.Pound = new OldBritishPoundSection(Decode(subStrings[0]));
+            this.Shilling = new OldBritishPoundSection(Decode(subStrings[1]));
+            this.Penny = new OldBritishPoundSection(Decode(subStrings[2]));
         }
 
 
         public ICurrency Add(string adder)
         {
-            throw new NotImplementedException();
+           
+
         }
 
         public ICurrency Divide(int divider)
