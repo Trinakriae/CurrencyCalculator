@@ -43,21 +43,21 @@ namespace CurrencyCalculator.App.Classes
 
         public ICurrency Divide(int divider)
         {
+            int toDivideShilling = 0;
+            int toDividePenny = 0;
             int remainderPound = 0;
             int remainderShilling = 0;
 
-        
-            this.Pound.Integer = (int)Math.Floor((decimal)(this.Pound.Integer / divider));
             remainderPound = this.Pound.Integer % divider;
-          
-            var shillingTempTotal = (this.Shilling.Integer + remainderPound * SHILLING_TO_POUND) / divider;
-            this.Shilling.Integer = (int)Math.Floor((decimal)shillingTempTotal);
-            remainderShilling = this.Shilling.Integer % divider;
+            this.Pound.Integer = (int)Math.Floor((decimal)(this.Pound.Integer / divider));
 
-            var pennyTempTotal = (this.Penny.Integer + remainderShilling * PENNY_TO_SHILLING) / divider;
-            this.Penny.Integer = (int)Math.Floor((decimal)pennyTempTotal);
-            this.Penny.Remainder = this.Penny.Integer % divider;
+            toDivideShilling = (this.Shilling.Integer + remainderPound * SHILLING_TO_POUND);
+            remainderShilling = toDivideShilling  % divider;
+            this.Shilling.Integer = (int)Math.Floor((decimal)toDivideShilling / divider);
 
+            toDividePenny = (this.Penny.Integer + remainderShilling * PENNY_TO_SHILLING);
+            this.Penny.Remainder = toDividePenny % divider;
+            this.Penny.Integer = (int)Math.Floor((decimal)toDividePenny / divider);
 
             return ReAllocateAmounts();
         }
@@ -107,24 +107,23 @@ namespace CurrencyCalculator.App.Classes
             this.Pound.Integer -= (subtractorObj.Pound.Integer + borrowedPound);
 
             return this;
-
         }
 
-        private int Decode(string toDecode)
+        public override string ToString()
         {
-            string sanitizedValue = toDecode.Remove(toDecode.Length - 1, 1);
-            return Int32.Parse(sanitizedValue);
-        }
+            var integer = $"{this.Pound.Integer}p {this.Shilling.Integer}s {this.Penny.Integer}d";
+            var remainder = string.Empty;
 
-        private void ValidateFormat(string value)
-        {
-            Regex rx = new Regex(@"[0-9]+p[ 0-9]+s[ 0-9]+d",
-                RegexOptions.Compiled);
-
-            if (rx.Matches(value).Count != 1)
+            if (this.Pound.Remainder != 0 || this.Shilling.Remainder != 0 || this.Penny.Remainder != 0)
             {
-                throw new FormatException($"The parameter {value} is not in the correct format <valueInPound>p <valueInShelling>s <valueInPenny>d");
+                remainder += "(";
+                remainder += this.Pound.Remainder != 0 ? this.Pound.Remainder + "p " : string.Empty;
+                remainder += this.Shilling.Remainder != 0 ? this.Shilling.Remainder + "s " : string.Empty;
+                remainder += this.Penny.Remainder != 0 ? this.Penny.Remainder + "d" : string.Empty;
+                remainder += ")";
             }
+
+            return $"{integer} {remainder}";
         }
 
         public ICurrency ReAllocateAmounts()
@@ -148,6 +147,8 @@ namespace CurrencyCalculator.App.Classes
 
             this.Pound.Integer += lentPound;
 
+            lentShilling = 0;
+            lentPound = 0;
 
             if (this.Penny.Remainder >= PENNY_TO_SHILLING)
             {
@@ -169,5 +170,21 @@ namespace CurrencyCalculator.App.Classes
             return this;
         }
 
+        private int Decode(string toDecode)
+        {
+            string sanitizedValue = toDecode.Remove(toDecode.Length - 1, 1);
+            return Int32.Parse(sanitizedValue);
+        }
+
+        private void ValidateFormat(string value)
+        {
+            Regex rx = new Regex(@"[0-9]+p[ 0-9]+s[ 0-9]+d",
+                RegexOptions.Compiled);
+
+            if (rx.Matches(value).Count != 1)
+            {
+                throw new FormatException($"The parameter {value} is not in the correct format <valueInPound>p <valueInShelling>s <valueInPenny>d");
+            }
+        }
     }
 }
