@@ -43,7 +43,23 @@ namespace CurrencyCalculator.App.Classes
 
         public ICurrency Divide(int divider)
         {
-            throw new NotImplementedException();
+            int remainderPound = 0;
+            int remainderShilling = 0;
+
+        
+            this.Pound.Integer = (int)Math.Floor((decimal)(this.Pound.Integer / divider));
+            remainderPound = this.Pound.Integer % divider;
+          
+            var shillingTempTotal = (this.Shilling.Integer + remainderPound * SHILLING_TO_POUND) / divider;
+            this.Shilling.Integer = (int)Math.Floor((decimal)shillingTempTotal);
+            remainderShilling = this.Shilling.Integer % divider;
+
+            var pennyTempTotal = (this.Penny.Integer + remainderShilling * PENNY_TO_SHILLING) / divider;
+            this.Penny.Integer = (int)Math.Floor((decimal)pennyTempTotal);
+            this.Penny.Remainder = this.Penny.Integer % divider;
+
+
+            return ReAllocateAmounts();
         }
 
         public ICurrency Multiply(int multiplier)
@@ -118,7 +134,7 @@ namespace CurrencyCalculator.App.Classes
 
             if (this.Penny.Integer >= PENNY_TO_SHILLING)
             {
-                lentShilling += (int)Math.Floor((decimal)this.Penny.Integer / PENNY_TO_SHILLING);
+                lentShilling = (int)Math.Floor((decimal)this.Penny.Integer / PENNY_TO_SHILLING);
                 this.Penny.Integer %= PENNY_TO_SHILLING;
             }
 
@@ -126,11 +142,29 @@ namespace CurrencyCalculator.App.Classes
 
             if (this.Shilling.Integer >= SHILLING_TO_POUND)
             {
-                lentPound += (int)Math.Floor((decimal)this.Shilling.Integer / SHILLING_TO_POUND);
+                lentPound = (int)Math.Floor((decimal)this.Shilling.Integer / SHILLING_TO_POUND);
                 this.Shilling.Integer %= SHILLING_TO_POUND;
             }
 
             this.Pound.Integer += lentPound;
+
+
+            if (this.Penny.Remainder >= PENNY_TO_SHILLING)
+            {
+                lentShilling = (int)Math.Floor((decimal)this.Penny.Remainder / PENNY_TO_SHILLING);
+                this.Penny.Remainder %= PENNY_TO_SHILLING;
+            }
+
+            this.Shilling.Remainder += lentShilling;
+
+            if (this.Shilling.Remainder >= SHILLING_TO_POUND)
+            {
+                lentPound = (int)Math.Floor((decimal)this.Shilling.Remainder / SHILLING_TO_POUND);
+                this.Shilling.Remainder %= SHILLING_TO_POUND;
+            }
+
+            this.Pound.Remainder += lentPound;
+
 
             return this;
         }
