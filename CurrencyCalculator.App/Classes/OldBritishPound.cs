@@ -59,7 +59,39 @@ namespace CurrencyCalculator.App.Classes
 
         public ICurrency Subtract(string subtractor)
         {
-            throw new NotImplementedException();
+            int borrowedShilling = 0;
+            int borrowedPound = 0;
+
+            var subtractorObj = new OldBritishPound(subtractor);
+
+            var pennySub = this.Penny.Integer - subtractorObj.Penny.Integer; 
+
+            if (pennySub > 0)
+            {
+                this.Penny.Integer = pennySub;
+            }
+            else
+            {
+                borrowedShilling = (int)Math.Ceiling((decimal)Math.Abs(pennySub) / PENNY_TO_SHILLING);
+                this.Penny.Integer = pennySub + (borrowedShilling * PENNY_TO_SHILLING);
+            }
+
+            var shillingSub = this.Shilling.Integer - subtractorObj.Shilling.Integer - borrowedShilling;
+
+            if (shillingSub > 0)
+            {
+                this.Shilling.Integer = shillingSub;
+            }
+            else
+            {
+                borrowedPound = (int)Math.Ceiling((decimal)Math.Abs(shillingSub) / SHILLING_TO_POUND);
+                this.Shilling.Integer = shillingSub + (borrowedPound * SHILLING_TO_POUND);
+            }
+
+            this.Pound.Integer -= (subtractorObj.Pound.Integer + borrowedPound);
+
+            return this;
+
         }
 
         private int Decode(string toDecode)
