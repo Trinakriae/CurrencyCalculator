@@ -48,7 +48,13 @@ namespace CurrencyCalculator.App.Classes
 
         public ICurrency Multiply(int multiplier)
         {
-            throw new NotImplementedException();
+            this.Penny.Integer *= multiplier;
+
+            this.Shilling.Integer *= multiplier;
+
+            this.Pound.Integer *= multiplier;
+
+            return ReAllocateAmounts();
         }
 
         public ICurrency Subtract(string subtractor)
