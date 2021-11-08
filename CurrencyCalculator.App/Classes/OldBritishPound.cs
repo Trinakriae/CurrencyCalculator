@@ -43,6 +43,11 @@ namespace CurrencyCalculator.App.Classes
 
         public ICurrency Divide(int divider)
         {
+            if(divider == 0)
+            {
+                throw new ArgumentOutOfRangeException("Cannot divide by 0");
+            }
+
             int toDivideShilling = 0;
             int toDividePenny = 0;
             int remainderPound = 0;

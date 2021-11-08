@@ -130,9 +130,8 @@ namespace CurrencyCalculator.Test
         public void Divide_DividerEqualToZero_ThrowsFormatException()
         {
             var target = new OldBritishPound("12p 2s 10d");
-            target.Divide(0);
 
-            Assert.Throws<FormatException>(() => target.Divide(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => target.Divide(0));
         }
 
         [Fact]
