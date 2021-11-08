@@ -124,7 +124,7 @@ namespace CurrencyCalculator.App.Classes
                 remainder += ")";
             }
 
-            return $"{integer} {remainder}";
+            return $"{integer} {remainder}".Trim();
         }
 
         public ICurrency ReAllocateAmounts()
