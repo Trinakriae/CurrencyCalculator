@@ -120,6 +120,7 @@ namespace CurrencyCalculator.App.Classes
                 remainder += this.Pound.Remainder != 0 ? this.Pound.Remainder + "p " : string.Empty;
                 remainder += this.Shilling.Remainder != 0 ? this.Shilling.Remainder + "s " : string.Empty;
                 remainder += this.Penny.Remainder != 0 ? this.Penny.Remainder + "d" : string.Empty;
+                remainder = remainder.Trim();
                 remainder += ")";
             }
 
